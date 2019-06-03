@@ -5,8 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Snake_TarmoRooparg"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Snake Game" Height="450" Width="800" MouseDown="Window_MouseDown" KeyDown="Window_KeyDown">
     <Grid>
-        
+        <Canvas Background="ForestGreen">
+            <Rectangle Height="80" Width="200"
+                       Stroke="Black" Fill="Blue" StrokeThickness="4"
+                       Canvas.Left="20"
+                       Canvas.Top="20"
+                       Name="rectangle1">
+            </Rectangle>
+        </Canvas>
     </Grid>
 </Window>
