@@ -20,29 +20,42 @@ namespace Snake_TarmoRooparg
     /// </summary>
     public partial class MainWindow : Window
     {
+        const double CellSize = 30D;
+        const int CellCount = 16;
+
         public MainWindow()
         {
             InitializeComponent();
+            DrawBoardBackground();
         }
 
-        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        private void DrawBoardBackground()
         {
-            if(e.LeftButton == MouseButtonState.Pressed)
+            SolidColorBrush color1 = Brushes.LightGreen;
+            SolidColorBrush color2 = Brushes.LimeGreen;
+
+            for (int row = 0; row < CellCount; row++)
             {
-                double currentLeft = Canvas.GetLeft(rectangle1);
-                double newLeft = currentLeft + 20;
-                Canvas.SetLeft(rectangle1, newLeft);
-            }
-            
-            if(e.RightButton == MouseButtonState.Pressed)
-            {
-                Canvas.SetLeft(rectangle1, 20);
+                SolidColorBrush color =
+                    row % 2 == 0 ? color1 : color2;
+                for (int col = 0; col < CellCount; col++)
+                {
+                    Rectangle r = new Rectangle();
+                    r.Width = CellSize;
+                    r.Height = CellSize;
+                    r.Fill = color;
+                    Canvas.SetTop(r, row * CellSize);
+                    Canvas.SetLeft(r, col * CellSize);
+                    board.Children.Add(r);
+
+                    color = color == color1 ? color2 : color1;
+                }
             }
         }
-
-        private void Window_KeyDown(object sender, KeyEventArgs e)
+        private void Window_KeyDown(
+            object sender, KeyEventArgs e)
         {
-            if(e.Key == Key.D)
+            /*if(e.Key == Key.D)
             {
                 double currentLeft = Canvas.GetLeft(rectangle1);
                 double newLeft = currentLeft + 20;
@@ -66,6 +79,7 @@ namespace Snake_TarmoRooparg
                 double newLeft = currentLeft + 20;
                 Canvas.SetTop(rectangle1, newLeft);
             }
+            */
         }
     }
 }
