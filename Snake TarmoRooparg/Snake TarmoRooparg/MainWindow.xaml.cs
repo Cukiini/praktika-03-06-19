@@ -27,8 +27,27 @@ namespace Snake_TarmoRooparg
         {
             InitializeComponent();
             DrawBoardBackground();
+            InitSnake();
         }
 
+        private void InitSnake()
+        {
+            snake.Height = CellSize;
+            snake.Width = CellSize;
+            double coord = CellCount * CellSize / 2;
+            Canvas.SetTop(snake, coord);
+            Canvas.SetLeft(snake, coord);
+        }
+
+        private void MoveSnake(bool up, bool down, bool left, bool right)
+        {
+            if (up || down)
+            {
+                double currentTop = Canvas.GetTop(snake);
+                ? currentTop - CellSize
+            }
+
+        }
         private void DrawBoardBackground()
         {
             SolidColorBrush color1 = Brushes.LightGreen;
@@ -55,31 +74,12 @@ namespace Snake_TarmoRooparg
         private void Window_KeyDown(
             object sender, KeyEventArgs e)
         {
-            /*if(e.Key == Key.D)
-            {
-                double currentLeft = Canvas.GetLeft(rectangle1);
-                double newLeft = currentLeft + 20;
-                Canvas.SetLeft(rectangle1, newLeft);
-            }
-            if (e.Key == Key.A)
-            {
-                double currentLeft = Canvas.GetLeft(rectangle1);
-                double newLeft = currentLeft - 20;
-                Canvas.SetLeft(rectangle1, newLeft);
-            }
-            if (e.Key == Key.W)
-            {
-                double currentLeft = Canvas.GetTop(rectangle1);
-                double newLeft = currentLeft - 20;
-                Canvas.SetTop(rectangle1, newLeft);
-            }
-            if(e.Key == Key.S)
-            {
-                double currentLeft = Canvas.GetTop(rectangle1);
-                double newLeft = currentLeft + 20;
-                Canvas.SetTop(rectangle1, newLeft);
-            }
-            */
+            bool up = e.Key == Key.W;
+            bool down = e.Key == Key.S;
+            bool left = e.Key == Key.A;
+            bool right = e.Key == Key.D;
+
+            MoveSnake(up, down, left, right);
         }
     }
 }
