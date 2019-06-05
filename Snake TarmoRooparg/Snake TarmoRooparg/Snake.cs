@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Shapes;
 
@@ -42,6 +43,34 @@ namespace SnakeGame
             direction = newDirection;
         }
 
+        private bool Border(double x)
+        {
+
+            if (x > 479 || x < 0)
+            {
+                if (MessageBox.Show("Game Over!\n\nAgain?","",
+                    MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    snakeShape.Height = cellSize;
+                    snakeShape.Width = cellSize;
+                    double coord = cellCount * cellSize / 2;
+                    Canvas.SetTop(snakeShape, coord);
+                    Canvas.SetLeft(snakeShape, coord);
+
+                    ChangeDirection(Direction.up);
+                }
+                else
+                {
+                    Application.Current.Shutdown();
+                }
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
         public void Move()
         {
             if (direction == Direction.up ||
@@ -52,6 +81,9 @@ namespace SnakeGame
                     ? currentTop - cellSize
                     : currentTop + cellSize;
                 Canvas.SetTop(snakeShape, newTop);
+
+                if (Border(newTop) == true)
+                    Canvas.SetTop(snakeShape, newTop);
             }
 
             if (direction == Direction.left ||
@@ -62,6 +94,9 @@ namespace SnakeGame
                     ? currentLeft - cellSize
                     : currentLeft + cellSize;
                 Canvas.SetLeft(snakeShape, newLeft);
+
+                if (Border(newLeft) == true)
+                    Canvas.SetLeft(snakeShape, newLeft);
             }
         }
     }

@@ -64,7 +64,6 @@ namespace SnakeGame
             }
         }
 
-
         private void Timer_Tick(object sender, EventArgs e)
         {
             snake.Move();
