@@ -39,12 +39,26 @@ namespace Snake_TarmoRooparg
             Canvas.SetLeft(snake, coord);
         }
 
-        private void MoveSnake(bool up, bool down, bool left, bool right)
+        private void MoveSnake(Direction direction)
         {
-            if (up || down)
+            if (direction == Direction.up ||
+                direction == Direction.down)
             {
                 double currentTop = Canvas.GetTop(snake);
-                ? currentTop - CellSize
+                double newTop = direction == Direction.up
+                    ? currentTop - CellSize
+                    : currentTop + CellSize;
+                Canvas.SetTop(snake, newTop);
+            }
+
+            if (direction == Direction.left ||
+                direction == Direction.right)
+            {
+                double currentLeft = Canvas.GetLeft(snake);
+                double newLeft = direction == Direction.left
+                    ? currentLeft - CellSize
+                    : currentLeft + CellSize;
+                Canvas.SetLeft(snake, newLeft);
             }
 
         }
@@ -74,12 +88,38 @@ namespace Snake_TarmoRooparg
         private void Window_KeyDown(
             object sender, KeyEventArgs e)
         {
-            bool up = e.Key == Key.W;
-            bool down = e.Key == Key.S;
-            bool left = e.Key == Key.A;
-            bool right = e.Key == Key.D;
+            Direction direction;
+            if(e.Key == Key.W)
+            {
+                direction = Direction.up;
+            }
+            else if (e.Key == Key.S)
+            {
+                direction = Direction.down;
+            }
+            else if (e.Key == Key.D)
+            {
+                direction = Direction.right;
+            }
+            else if (e.Key == Key.A)
+            {
+                direction = Direction.left;
+            }
+            else
+            {
+                return;
+            }
+            
 
-            MoveSnake(up, down, left, right);
+            MoveSnake(direction);
+        }
+
+        public enum Direction
+        {
+            up,
+            down,
+            left,
+            right
         }
     }
 }
