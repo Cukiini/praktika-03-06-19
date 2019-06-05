@@ -12,56 +12,33 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
-namespace Snake_TarmoRooparg
+
+namespace SnakeGame
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
+    
     public partial class MainWindow : Window
     {
         const double CellSize = 30D;
         const int CellCount = 16;
 
+        DispatcherTimer timer;
+        Snake snake;
+
         public MainWindow()
         {
             InitializeComponent();
             DrawBoardBackground();
-            InitSnake();
+            snake = new Snake(snakeShape, CellSize, CellCount);
+            snake.Init();
+
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromSeconds(0.5);
+            timer.Tick += Timer_Tick;
+            timer.Start();
         }
 
-        private void InitSnake()
-        {
-            snake.Height = CellSize;
-            snake.Width = CellSize;
-            double coord = CellCount * CellSize / 2;
-            Canvas.SetTop(snake, coord);
-            Canvas.SetLeft(snake, coord);
-        }
-
-        private void MoveSnake(Direction direction)
-        {
-            if (direction == Direction.up ||
-                direction == Direction.down)
-            {
-                double currentTop = Canvas.GetTop(snake);
-                double newTop = direction == Direction.up
-                    ? currentTop - CellSize
-                    : currentTop + CellSize;
-                Canvas.SetTop(snake, newTop);
-            }
-
-            if (direction == Direction.left ||
-                direction == Direction.right)
-            {
-                double currentLeft = Canvas.GetLeft(snake);
-                double newLeft = direction == Direction.left
-                    ? currentLeft - CellSize
-                    : currentLeft + CellSize;
-                Canvas.SetLeft(snake, newLeft);
-            }
-
-        }
         private void DrawBoardBackground()
         {
             SolidColorBrush color1 = Brushes.LightGreen;
@@ -71,6 +48,7 @@ namespace Snake_TarmoRooparg
             {
                 SolidColorBrush color =
                     row % 2 == 0 ? color1 : color2;
+
                 for (int col = 0; col < CellCount; col++)
                 {
                     Rectangle r = new Rectangle();
@@ -85,41 +63,38 @@ namespace Snake_TarmoRooparg
                 }
             }
         }
+
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            snake.Move();
+        }
+
         private void Window_KeyDown(
             object sender, KeyEventArgs e)
         {
             Direction direction;
-            if(e.Key == Key.W)
+            switch (e.Key)
             {
-                direction = Direction.up;
+                case Key.W:
+                    direction = Direction.up;
+                    break;
+                case Key.S:
+                    direction = Direction.down;
+                    break;
+                case Key.A:
+                    direction = Direction.left;
+                    break;
+                case Key.D:
+                    direction = Direction.right;
+                    break;
+                default:
+                    return;
             }
-            else if (e.Key == Key.S)
-            {
-                direction = Direction.down;
-            }
-            else if (e.Key == Key.D)
-            {
-                direction = Direction.right;
-            }
-            else if (e.Key == Key.A)
-            {
-                direction = Direction.left;
-            }
-            else
-            {
-                return;
-            }
-            
 
-            MoveSnake(direction);
+            snake.ChangeDirection(direction);
         }
 
-        public enum Direction
-        {
-            up,
-            down,
-            left,
-            right
-        }
+        
     }
 }

@@ -1,20 +1,28 @@
-﻿<Window x:Class="Snake_TarmoRooparg.MainWindow"
+﻿<Window x:Class="SnakeGame.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Snake_TarmoRooparg"
+        xmlns:local="clr-namespace:SnakeGame"
         mc:Ignorable="d"
         Title="Snake Game"
         SizeToContent="WidthAndHeight"
         KeyDown="Window_KeyDown"
         ResizeMode="NoResize" Topmost="True">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <Label Name="lblDirection" FontWeight="Bold"
+                   ></Label>
+        </StackPanel>
         <Canvas Name="board" Background="ForestGreen"
                 Height="480" Width="480">
 
             <Rectangle 
-                Name="snake"
+                Name="snakeShape"
                 Fill="Brown"
                 Panel.ZIndex="100">
             </Rectangle>
