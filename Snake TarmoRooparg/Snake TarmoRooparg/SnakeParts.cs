@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace SnakeGame
 {
-    public enum Direction
+    class SnakeParts
     {
-        Up,
-        Down,
-        Left,
-        Right
+        public int Row { get; set; }
+        public int Col { get; set; }
     }
 }

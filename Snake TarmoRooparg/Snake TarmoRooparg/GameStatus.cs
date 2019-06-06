@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace SnakeGame
 {
-    public enum Direction
+    enum GameStatus
     {
-        Up,
-        Down,
-        Left,
-        Right
+        NotStarted,
+        Ongoing,
+        GameOver
     }
 }

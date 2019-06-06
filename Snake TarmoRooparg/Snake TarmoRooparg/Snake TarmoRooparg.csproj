@@ -56,7 +56,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Direction.cs" />
-    <Compile Include="Snake.cs" />
+    <Compile Include="GameStatus.cs" />
+    <Compile Include="SnakeParts.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -15,17 +15,24 @@
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <Label Name="lblDirection" FontWeight="Bold"
-                   ></Label>
+            <Label Name="lblGameStatus" FontWeight="Bold" FontSize="16"></Label>
+            <Label Name="lblSnakeDirection" FontWeight="Bold" FontSize="16"></Label>
+            <Label Name="lblScore" FontWeight="Bold" FontSize="16"></Label>
         </StackPanel>
         <Canvas Name="board" Background="ForestGreen"
-                Height="480" Width="480">
-
+                Height="480" Width="480"
+                Grid.Row="1">
+    
             <Rectangle 
                 Name="snakeShape"
                 Fill="Brown"
                 Panel.ZIndex="100">
             </Rectangle>
+            <Ellipse
+                Name="foodShape"
+                Fill="Black"
+                Panel.ZIndex="5">
+            </Ellipse>
         </Canvas>
     </Grid>
 </Window>
