@@ -32,8 +32,7 @@ namespace SnakeGame
         Direction snakeDirection;
         int foodRow;
         int foodCol;
-        List<SnakeParts> SnakeParts =
-            new List<SnakeParts>();
+        List<UIElement> snakePart = new List<UIElement>();
         int score;
 
         public MainWindow()
@@ -128,7 +127,7 @@ namespace SnakeGame
                 ChangeGameStatus(GameStatus.GameOver);
                 return;
             }
-
+            
             bool food =
             snakeParts.Row == foodRow &&
             snakeParts.Col == foodCol;
@@ -136,17 +135,9 @@ namespace SnakeGame
             {
                 ChangeScore(score + 1);
                 InitFood();
+                SnakeBodyChanges();
             }
 
-            List<SnakeParts> SnakeParts =
-            new List<SnakeParts>();
-            SnakeParts.Add();
-            SnakeParts.Add();
-            SnakeParts.Add();
-
-            temp = b.Last();
-            b.RemoveLast();
-            b.AddFirst(SnakeParts);
 
             SetShape(snakeShape, snakeParts.Row, snakeParts.Col);
         }          
@@ -169,6 +160,40 @@ namespace SnakeGame
             }
 
             MoveSnake();
+        }
+
+        private void SnakeBodyChanges()
+        {
+            double X = board.Width / CellCount;
+            double snakeCurrTop = Canvas.GetTop(board);
+            double snakeCurrLeft = Canvas.GetLeft(board);
+
+            Rectangle bodyPart = new Rectangle();
+            bodyPart.Width = X;
+            bodyPart.Height = X;
+            bodyPart.Fill = Brushes.DodgerBlue;
+            bodyPart.RadiusX = CellSize;
+            bodyPart.RadiusY = CellSize;
+            Panel.SetZIndex(bodyPart, 9);
+            Canvas.SetTop(bodyPart, snakeCurrTop);
+            Canvas.SetLeft(bodyPart, snakeCurrLeft);
+            board.Children.Add(bodyPart);
+
+            snakePart.Add(bodyPart);
+
+            foreach (UIElement body in snakePart)
+            {
+                body.Visibility = Visibility.Collapsed;
+            }
+
+            int lastBodyPart = snakePart.Count - 1;
+            for (int i = 0; i <= score; i++)
+            {
+                snakePart[lastBodyPart].Visibility = Visibility.Visible;
+                lastBodyPart--;
+            }
+            snakePart[snakePart.Count - 1].Visibility = Visibility.Collapsed;
+
         }
 
         private void Window_KeyDown(
