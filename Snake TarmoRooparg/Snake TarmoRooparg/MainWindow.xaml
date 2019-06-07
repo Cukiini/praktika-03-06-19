@@ -16,21 +16,18 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal">
             <Label Name="lblGameStatus" FontWeight="Bold" FontSize="16"></Label>
+            <Label Name="lblPoints" FontWeight="Bold" FontSize="16"></Label>
             <Label Name="lblSnakeDirection" FontWeight="Bold" FontSize="16"></Label>
-            <Label Name="lblScore" FontWeight="Bold" FontSize="16"></Label>
         </StackPanel>
-        <Canvas Name="board" Background="ForestGreen"
-                Height="480" Width="480"
-                Grid.Row="1">
-    
-            <Rectangle 
-                Name="snakeShape"
-                Fill="Brown"
-                Panel.ZIndex="100">
-            </Rectangle>
+        <Canvas 
+            Grid.Row="1"
+            Name="board" 
+            Height="480" Width="480">
             <Ellipse
                 Name="foodShape"
-                Fill="Black"
+                Fill="Red"
+                Stroke="Black"
+                StrokeThickness="3"
                 Panel.ZIndex="5">
             </Ellipse>
         </Canvas>

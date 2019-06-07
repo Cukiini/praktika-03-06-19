@@ -57,6 +57,7 @@
     </ApplicationDefinition>
     <Compile Include="Direction.cs" />
     <Compile Include="GameStatus.cs" />
+    <Compile Include="Location.cs" />
     <Compile Include="SnakeParts.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

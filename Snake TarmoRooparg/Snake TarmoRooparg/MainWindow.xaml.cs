@@ -25,23 +25,25 @@ namespace SnakeGame
 
         DispatcherTimer timer;
         Random rnd = new Random();
-        GameStatus gameStatus;
-        SnakeParts snakeParts = new SnakeParts();
-        
 
-        Direction snakeDirection;
+        GameStatus gameStatus;
+
         int foodRow;
         int foodCol;
-        List<UIElement> snakePart = new List<UIElement>();
-        int score;
+
+        Direction snakeDirection;
+        LinkedList<Rectangle> snakeParts =
+            new LinkedList<Rectangle>();
+
+        int points;
 
         public MainWindow()
         {
             InitializeComponent();
             DrawBoardBackground();
-            InitSnake();
             InitFood();
-            ChangeScore(0);
+            InitSnake();
+            ChangePoints(0);
 
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(0.25);
@@ -63,12 +65,8 @@ namespace SnakeGame
 
                 for (int col = 0; col < CellCount; col++)
                 {
-                    Rectangle r = new Rectangle();
-                    r.Width = CellSize;
-                    r.Height = CellSize;
-                    r.Fill = color;
-                    SetShape(r, row, col);
-                    board.Children.Add(r);
+                    InitRectangle(
+                        CellSize, row, col, color, 0);
 
                     color = color == color1 ? color2 : color1;
                 }
@@ -80,22 +78,67 @@ namespace SnakeGame
             gameStatus = newGameStatus;
             lblGameStatus.Content =
                 $"Status: {gameStatus}";
-        } 
-         
+        }
+
+        private void ChangePoints(int newPoints)
+        {
+            points = newPoints;
+            lblPoints.Content =
+                $"Points: {points}";
+        }
+
+        private void InitFood()
+        {
+            foodShape.Height = CellSize;
+            foodShape.Width = CellSize;
+            foodRow = rnd.Next(0, CellCount);
+            foodCol = rnd.Next(0, CellCount);
+            SetShape(foodShape, foodRow, foodCol);
+            
+        }
+
         private void InitSnake()
         {
-            snakeShape.Height = CellSize;
-            snakeShape.Width = CellSize;
             int index = CellCount / 2;
-            snakeParts.Row = index;
-            snakeParts.Col = index;
-            SetShape(snakeShape, snakeParts.Row, snakeParts.Col);
+            for (int i = 0; i < 3; i++)
+            {
+                int row = index;
+                int col = index + i;
 
-            ChangeSnakeDirection(Direction.Up);
+                Rectangle r = InitRectangle(
+                    CellSize, row, col, Brushes.SaddleBrown, 10);
+                snakeParts.AddLast(r);
+            }
+
+            ChangeSnakeDirection(Direction.Left);
         }
 
         private void ChangeSnakeDirection(Direction direction)
         {
+            if (snakeDirection == Direction.Left &&
+               direction == Direction.Right)
+            {
+                return;
+            }
+
+            if (snakeDirection == Direction.Right &&
+                direction == Direction.Left)
+            {
+                return;
+            }
+
+            if (snakeDirection == Direction.Up &&
+                direction == Direction.Down)
+            {
+                return;
+            }
+
+            if (snakeDirection == Direction.Down &&
+                direction == Direction.Up)
+            {
+                return;
+            }
+
             snakeDirection = direction;
             lblSnakeDirection.Content =
                 $"Direction: {direction}";
@@ -103,44 +146,103 @@ namespace SnakeGame
 
         private void MoveSnake()
         {
+            Rectangle currentHead = snakeParts.First.Value;
+            Location currentHeadLocation =
+                (Location)currentHead.Tag;
+
+            int newHeadRow = currentHeadLocation.Row;
+            int newHeadCol = currentHeadLocation.Col;
+
             switch (snakeDirection)
             {
                 case Direction.Up:
-                    snakeParts.Row--;
+                    newHeadRow--;
                     break;
                 case Direction.Down:
-                    snakeParts.Row++;
+                    newHeadRow++;
                     break;
                 case Direction.Left:
-                    snakeParts.Col--;
+                    newHeadCol--;
                     break;
                 case Direction.Right:
-                    snakeParts.Col++;
+                    newHeadCol++;
                     break;
             }
-            bool outOfBoundaries =
-                (snakeParts.Row < 0 || snakeParts.Row >= CellCount ||
-                snakeParts.Col < 0 || snakeParts.Col >= CellCount);
 
-            if (outOfBoundaries)
+            bool outOfBoundaries =
+                newHeadRow < 0 || newHeadRow >= CellCount ||
+                newHeadCol < 0 || newHeadCol >= CellCount;
+            if  (outOfBoundaries)
             {
                 ChangeGameStatus(GameStatus.GameOver);
                 return;
             }
-            
+            Location newHeadLocation =
+               new Location(newHeadRow, newHeadCol);
+
             bool food =
-            snakeParts.Row == foodRow &&
-            snakeParts.Col == foodCol;
-            if (food)
+                newHeadRow == foodRow &&
+                newHeadCol == foodCol;
+            foreach (Rectangle r in snakeParts)
             {
-                ChangeScore(score + 1);
-                InitFood();
-                SnakeBodyChanges();
+                if (!food && snakeParts.Last.Value == r)
+                {
+                    continue;
+                }
+                Location location = (Location)r.Tag;
+                if(location.Row == newHeadRow &&
+                    location.Col == newHeadCol)
+                {
+                    ChangeGameStatus(GameStatus.GameOver);
+                    return; 
+                }
             }
 
+            if(food)
+            {
+                ChangePoints(points + 1);
+                InitFood();
+                Rectangle r = InitRectangle(
+                    CellSize,
+                    newHeadRow,
+                    newHeadCol,
+                    Brushes.SaddleBrown,          
+                    10);
+                snakeParts.AddFirst(r);
+            }
+            else
+            {
+                
+                Rectangle newHead = snakeParts.Last.Value;
+                newHead.Tag = new Location(newHeadRow, newHeadCol);
 
-            SetShape(snakeShape, snakeParts.Row, snakeParts.Col);
-        }          
+                SetShape(newHead, newHeadRow, newHeadCol);
+                snakeParts.RemoveLast();
+                snakeParts.AddFirst(newHead);
+            }
+        }
+
+        private Rectangle InitRectangle(
+            double size,
+            int row,
+            int col,
+            Brush fill,
+            int zindex)
+        {
+            Location location = new Location(row, col);
+
+            Rectangle r = new Rectangle();
+            r.Height = size;
+            r.Width = size;
+            r.Fill = fill;
+            Panel.SetZIndex(r, zindex);
+            r.Tag = new Location(row, col);
+
+            SetShape(r, row, col);
+            board.Children.Add(r);
+
+            return r;
+        }
 
         private void SetShape(
             Shape shape, int row, int col)
@@ -160,40 +262,6 @@ namespace SnakeGame
             }
 
             MoveSnake();
-        }
-
-        private void SnakeBodyChanges()
-        {
-            double X = board.Width / CellCount;
-            double snakeCurrTop = Canvas.GetTop(board);
-            double snakeCurrLeft = Canvas.GetLeft(board);
-
-            Rectangle bodyPart = new Rectangle();
-            bodyPart.Width = X;
-            bodyPart.Height = X;
-            bodyPart.Fill = Brushes.DodgerBlue;
-            bodyPart.RadiusX = CellSize;
-            bodyPart.RadiusY = CellSize;
-            Panel.SetZIndex(bodyPart, 9);
-            Canvas.SetTop(bodyPart, snakeCurrTop);
-            Canvas.SetLeft(bodyPart, snakeCurrLeft);
-            board.Children.Add(bodyPart);
-
-            snakePart.Add(bodyPart);
-
-            foreach (UIElement body in snakePart)
-            {
-                body.Visibility = Visibility.Collapsed;
-            }
-
-            int lastBodyPart = snakePart.Count - 1;
-            for (int i = 0; i <= score; i++)
-            {
-                snakePart[lastBodyPart].Visibility = Visibility.Visible;
-                lastBodyPart--;
-            }
-            snakePart[snakePart.Count - 1].Visibility = Visibility.Collapsed;
-
         }
 
         private void Window_KeyDown(
@@ -222,26 +290,9 @@ namespace SnakeGame
                 default:
                     return;
             }
+
             ChangeSnakeDirection(direction);
         }
-
-        private void ChangeScore(int newPoints)
-        {
-            score = newPoints;
-            lblScore.Content =
-                $"Points: {score}";
-        }
-
-        private void InitFood()
-        {
-            foodShape.Height = CellSize;
-            foodShape.Width = CellSize;
-
-            foodRow = rnd.Next(0, CellCount);
-            foodCol = rnd.Next(0, CellCount);
-            SetShape(foodShape, foodRow, foodCol);
-        }        
-
     }
 }
 
